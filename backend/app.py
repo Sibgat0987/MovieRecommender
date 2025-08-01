@@ -22,12 +22,13 @@ movies = movies[['movie_id', 'title', 'overview', 'genres', 'keywords', 'cast', 
 movies.dropna(inplace=True)
 
 # Helper functions to process data
+# will convert the string to a list
 def convert(obj):
     L = []
     for i in ast.literal_eval(obj):
         L.append(i['name'])
     return L
-
+# 3 actors
 def convert3(obj):
     L = []
     counter = 0
@@ -95,26 +96,11 @@ def recommend_movies():
 
     return jsonify({'recommendations': poster_urls})
 
-
+#to get the list for choosing movie saari movies hogi yahan
 @app.route('/movies', methods=['GET'])
 def get_movies():
     movie_titles = new_df['title'].tolist()
     return jsonify({'movies': movie_titles})
-
-@app.route('/posters', methods=['GET'])
-def get_posters():
-    movie_titles = new_df['title'].tolist()
-    api_key = "f40cffb4"
-    posters = []
-    for title in movie_titles:
-        url = f"http://www.omdbapi.com/?t={title}&apikey={api_key}"
-        response = requests.get(url)
-        data = response.json()
-        if 'Poster' in data and data['Poster'] != 'N/A':
-            posters.append({'title': title, 'poster_url': data['Poster']})
-        else:
-            posters.append({'title': title, 'poster_url': 'https://via.placeholder.com/150'})
-    return jsonify({'posters': posters})
 
 if __name__ == '__main__':
     app.run(debug=True)

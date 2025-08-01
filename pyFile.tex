@@ -1,0 +1,65 @@
+import numpy as np 
+import pandas as pd
+movies=pd.read_csv("tmdb_5000_movies.csv")
+credits=pd.read_csv("tmdb_5000_credits.csv")
+movies.head(1)
+credits.head(1)['cast'].values
+movies=movies.merge(credits,on='title')
+movies.head(1)
+#genre
+#id(for getting posters of movies)
+#keywords
+#title
+#overview
+#cast 
+#crew(director)
+movies=movies[['movie_id','title','overview','genres','keywords','cast','crew']]
+movies.head()
+movies.isnull().sum()
+#PREPROCESSING overview 3 movies dont have
+movies.dropna(inplace=True)
+movies.isnull().sum()
+movies.duplicated().sum()
+#no row is duplicate
+movies.iloc[0].genres
+#'[{"id": 28, "name": "Action"}, {"id": 12, "name": "Adventure"}, {"id": 14, "name": "Fantasy"}, {"id": 878, "name": "Science Fiction"}]'
+#change to ['action','adventure','fantasy','sciFci'] get a list of evry genre of the movie
+import ast 
+def convert(obj):
+  L=[]
+  for i in ast.literal_eval(obj):       #to convert string to list else it will read char by char
+    i['name']
+    L.append(i['name'])
+  return L
+  movies['genres']=movies['genres'].apply(convert)
+  movies['keywords']=movies['keywords'].apply(convert)
+  import ast
+# get 3 top cast actors
+def convert3(obj):
+  L=[]
+  counter=0
+  for i in ast.literal_eval(obj):
+    if counter != 3:
+         L.append(i['name'])
+         counter+=1
+    else:
+       break     
+  return L
+movies['cast']=movies['cast'].apply(convert3)
+def fetch_director(obj):
+  L=[]
+  for i in ast.literal_eval(obj):
+    if i['job']=='Director':
+                L.append(i['name'])
+                break
+  return L
+movies['crew']=movies['crew'].apply(fetch_director)
+convert overview(it is string) to list 
+movies['overview']=movies['overview'].apply(lambda x:x.split())
+#Sam Worthington so that there is no confusion if theres another sam in different row
+#SamWorthington no space
+movies['genres']=movies['genres'].apply(lambda x:[i.replace(" ","") for i in x])
+movies['keywords']=movies['keywords'].apply(lambda x:[i.replace(" ","") for i in x])
+movies['cast']=movies['cast'].apply(lambda x:[i.replace(" ","") for i in x])
+movies['crew']=movies['crew'].apply(lambda x:[i.replace(" ","") for i in x])
+movies['tags']=movies['overview']+movies['genres']+movies['keywords']+movies['cast']+movies['crew']  

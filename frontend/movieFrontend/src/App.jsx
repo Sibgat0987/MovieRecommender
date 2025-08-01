@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Select from 'react-select';
+import Select from 'react-select';//label and value.
 
 function App() {
     const [movies, setMovies] = useState([]);
@@ -15,7 +15,7 @@ function App() {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
-                const data = await response.json();
+                const data = await response.json();//key-values pair
                 const movieOptions = data.movies.map(movie => ({
                     value: movie,
                     label: movie,
@@ -27,7 +27,7 @@ function App() {
         };
 
         fetchMovies();
-    }, []);
+    }, []);//runs only once when page loads
 
     const getRecommendations = async () => {
         setLoading(true);
